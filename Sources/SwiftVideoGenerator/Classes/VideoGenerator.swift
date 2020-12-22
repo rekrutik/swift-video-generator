@@ -183,9 +183,9 @@ public class VideoGenerator: NSObject {
                     
                     /// add the max between the audio duration time or a minimum duration to the elapsed time
                     elapsedTime += VideoGenerator.current.audioDurations[frameCount] <= 1 ? VideoGenerator.current.minSingleVideoDuration : VideoGenerator.current.audioDurations[frameCount]
-                  } else if VideoGenerator.current.type = .realtime {
+                  } else if VideoGenerator.current.type == .realtime {
                     nextStartTimeForFrame = frameCount == 0 ? CMTime(seconds: 0, preferredTimescale: 1) : CMTime(seconds: Double(elapsedTime), preferredTimescale: 1)
-                    elapsedTime += CMTimeMake(value: 1, timescale: 30)
+                    elapsedTime += CMTimeMake(value: 1, timescale: 30).seconds
                   } else {
                     nextStartTimeForFrame = frameCount == 0 ? CMTime(seconds: 0, preferredTimescale: 600) : CMTime(seconds: Double(elapsedTime), preferredTimescale: 600)
                     
@@ -608,7 +608,7 @@ public class VideoGenerator: NSObject {
     }
     
     switch type! {
-    case .single, .singleAudioMultipleImage:
+    case .single, .singleAudioMultipleImage, .realtime:
       /// guard against multiple audios in single mode
       if _audios.count != 1 {
         if let _audio = _audios.first {
