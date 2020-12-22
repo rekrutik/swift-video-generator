@@ -28,7 +28,7 @@ public class VideoGenerator: NSObject {
   /// - single: a single type generates a video from a single image and audio files
   /// - multiple: a multiple type generates a video with multiple image/audio combinations (the first image/audio pair is combined, played then switched for the next image/audio pair)
   public enum VideoGeneratorType: Int {
-    case single, multiple, singleAudioMultipleImage
+    case single, multiple, singleAudioMultipleImage, realtime
     
     init() {
       self = .single
@@ -183,6 +183,9 @@ public class VideoGenerator: NSObject {
                     
                     /// add the max between the audio duration time or a minimum duration to the elapsed time
                     elapsedTime += VideoGenerator.current.audioDurations[frameCount] <= 1 ? VideoGenerator.current.minSingleVideoDuration : VideoGenerator.current.audioDurations[frameCount]
+                  } else if VideoGenerator.current.type = .realtime {
+                    nextStartTimeForFrame = frameCount == 0 ? CMTime(seconds: 0, preferredTimescale: 1) : CMTime(seconds: Double(elapsedTime), preferredTimescale: 1)
+                    elapsedTime += CMTimeMake(value: 1, timescale: 30)
                   } else {
                     nextStartTimeForFrame = frameCount == 0 ? CMTime(seconds: 0, preferredTimescale: 600) : CMTime(seconds: Double(elapsedTime), preferredTimescale: 600)
                     
